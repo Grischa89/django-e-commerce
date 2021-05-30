@@ -95,6 +95,10 @@ class PrivateApiTests(TestCase):
     def api_authentication(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
 
+    def test___str__(self):
+        product1, product2, product3, product4 = create_minimal_data()
+        self.assertEqual(product1.__str__(), "summer_product_1")
+
     def test_latest_product(self):
         """Test that logged in user can the the latest products"""
         product1, product2, product3, product4 = create_minimal_data()

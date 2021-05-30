@@ -15,8 +15,6 @@ class ProductSerializer(serializers.ModelSerializer):
             "get_thumbnail",
             "average_rating",
             "counter_rating",
-            "price_exp",
-            "average_rating1",
         )
 
 class CategorySerializer(serializers.ModelSerializer):

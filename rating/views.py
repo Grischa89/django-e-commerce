@@ -15,14 +15,15 @@ from rating.models import Rating
 from .serializers import RatingSerializer
 from django.db.models import Min, Max, Avg, F
 from django.shortcuts import get_object_or_404
+from django.http import Http404
 
 # @api_view(['GET'])
 # @authentication_classes([authentication.TokenAuthentication])
 # @permission_classes([permissions.IsAuthenticated])
 
 
-class FullRatingsList(APIView):
-
+class AllRatingsList(APIView):
+    
     def get_object(self, category_slug, product_slug):
         try:
             return Product.objects.filter(category__slug=category_slug).get(slug=product_slug)
@@ -40,31 +41,12 @@ class RatingsViewSet(APIView):
 
     def get(self, request):
         rating_avg =  Rating.objects.values('product__id').annotate(Max('rate'))
-        # print("annotate: ",rating_avg, type(rating_avg))
-        # print("after init", dir(rating_avg))
-        # print("rating_avg[0]: ", rating_avg[0])
-        # print("rating_avg[1]: ", dir(rating_avg[0]))
-        # print("rating_avg[0]: ", rating_avg[0].items)
         product = get_object_or_404(
                 Product.objects.annotate(avg_score=Avg('rating__rate')),
                 pk=1
             )
-        # print("product::: ", product, Product.objects.all())
-        queryset1 = Product.objects.filter(
-        name__startswith='F')
-        
-        # print("queryset1: ",queryset1)
-        # print(queryset1)
-        # print(dir(queryset1))
-        # print(queryset1.all())
-        # print(queryset1.values())
-        # print(queryset1.values_list())
-        
-        # if serializer.is_valid():
-            # print("serializer.errors: ", serializer.errors)
         return Response(rating_avg, status=status.HTTP_201_CREATED)
-        # print("serializer.errors: ", serializer.errors)
-        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 @api_view(['POST'])
@@ -84,9 +66,7 @@ def rate_product(request, category_slug, product_slug):
     # print("serializer: ", serializer)
 
     if serializer.is_valid():
-
         serializer.save()
-
         ratings = Rating.objects.filter(product=request.data['product'])
         Product.objects.filter(id=request.data['product']).update(counter_rating=ratings.count())
         #use this when more products/ratings
