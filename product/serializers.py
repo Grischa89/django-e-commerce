@@ -1,13 +1,15 @@
 from rest_framework import serializers
 
-from .models import Category, Product, WeAreTheWorld
+from .models import Category, Product
 
 class ProductSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Product
         fields = (
             "id",
             "name",
+            "category",
             "get_absolute_url",
             "description",
             "price",
@@ -15,6 +17,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "get_thumbnail",
             "average_rating",
             "counter_rating",
+
         )
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -29,16 +32,3 @@ class CategorySerializer(serializers.ModelSerializer):
             "products",
             
         )
-
-# class ProductRatingSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = WeAreTheWorld
-
-
-#         fields = (
-#             # "id",
-#             "user_id",
-#             "text",
-#             "rate",
-#             # "product",
-#         )

@@ -11,13 +11,11 @@ from product.models import Product, Category
 
 from rating.serializers import RatingSerializer
 
-
-# INGREDIENTS_URL = 'products/rate_product/<slug:category_slug>/<slug:product_slug>/'
 RATE_PRODCUT_URL =reverse('rate-product', kwargs={'category_slug': 'summer', 'product_slug': 'light-jacket'})
 
 
-class PublicIngredientsApiTests(TestCase):
-    """Test the publicly available ingredients API"""
+class PublicRatingApiTests(TestCase):
+    """Test the public available API"""
 
     def setUp(self):
         self.client = APIClient()
@@ -28,8 +26,8 @@ class PublicIngredientsApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED) #todo
 
 
-class PrivateApiTests(TestCase):
-    """Test the private ingredients API"""
+class PrivaterRatingApiTests(TestCase):
+    """Test the private rating API"""
 
     def setUp(self):
         self.client = APIClient()
@@ -37,7 +35,7 @@ class PrivateApiTests(TestCase):
         print("self.user", self.user)
         # obtain a json web token for the newly created user
         response=self.client.post('/api/v1/token/login/',data={'username':'jana','password':'i-keep-jumping'})
-        print("response111: ", response, response.data)
+        # print("response111: ", response, response.data)
         self.token=response.data['auth_token']
         self.api_authentication()
 
@@ -53,7 +51,6 @@ class PrivateApiTests(TestCase):
         data = {'product':product.id, 'text':'example for a rating of a product', 'rate':5}
         res = self.client.post(RATE_PRODCUT_URL, data, format='json')
 
-        print("test_create_product: ",  res.data)
         self.assertEqual(res.status_code, 201)
         self.assertEqual(res.data['id'], 1)
         self.assertEqual(res.data['product'], data['product'])
@@ -63,7 +60,6 @@ class PrivateApiTests(TestCase):
         data = {'product':product.id, 'text':'example for a rating of a product', 'rate':'five is a string'}
         res1 = self.client.post(RATE_PRODCUT_URL, data, format='json')
         self.assertEqual(res1.status_code, 400)
-        print(res1, "we print it", res1.data)
 
     def test_get_all_ratings_of_product(self):
         User = get_user_model()
@@ -83,8 +79,6 @@ class PrivateApiTests(TestCase):
         RATINGS_URL =reverse('all-ratings', kwargs={'category_slug': category.slug, 'product_slug': 'nonexistingproduct'})
         res1 = self.client.get(RATINGS_URL)
         self.assertEqual(res1.status_code, 404)
-
-
 
     def test___str__(self):
         

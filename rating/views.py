@@ -35,35 +35,25 @@ class AllRatingsList(APIView):
         ratings = Rating.objects.filter( product=product.id )
         serializer = RatingSerializer(ratings, many=True )
 
-        return Response(serializer.data)
+        return Response(serializer.data) # todo add status 200
 
-class RatingsViewSet(APIView):
+# class RatingsViewSet(APIView):
 
-    def get(self, request):
-        rating_avg =  Rating.objects.values('product__id').annotate(Max('rate'))
-        product = get_object_or_404(
-                Product.objects.annotate(avg_score=Avg('rating__rate')),
-                pk=1
-            )
-        return Response(rating_avg, status=status.HTTP_201_CREATED)
-
-
+#     def get(self, request):
+#         rating_avg =  Rating.objects.values('product__id').annotate(Max('rate'))
+#         product = get_object_or_404(
+#                 Product.objects.annotate(avg_score=Avg('rating__rate')),
+#                 pk=1
+#             )
+#         return Response(rating_avg, status=status.HTTP_201_CREATED)
 
 @api_view(['POST'])
 @authentication_classes([authentication.TokenAuthentication])
 @permission_classes([permissions.IsAuthenticated])
 def rate_product(request, category_slug, product_slug):
-    # print("in the rate_product:", request.data, request.user.id)
-    # if "product" not in request.data:
-    #     print("haha")
-    #     return Response("There is no product in there")
-    # if request.user.id == 11:
-    #     print(request.user.id)
-    #     print("There is not user id in the request")
-    #     return Response("There is not user id in the request")
+
     request.data['user'] = request.user.id
     serializer = RatingSerializer(data=request.data)
-    # print("serializer: ", serializer)
 
     if serializer.is_valid():
         serializer.save()

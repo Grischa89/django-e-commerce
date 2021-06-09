@@ -1,0 +1,9 @@
+[run]
+ omit =
+  *tests*
+  djackets_django\settings.py
+  *__init__.py*
+  djackets_django\asgi.py
+  djackets_django\wsgi.py
+  /*migrations*
+  manage.py

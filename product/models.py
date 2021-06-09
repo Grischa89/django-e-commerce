@@ -12,7 +12,8 @@ from rating.models import Rating
 
 class Category(models.Model):
     name = models.CharField(max_length=255)
-    slug = models.SlugField()
+    # slug = models.SlugField()
+    slug = AutoSlugField("Category Slug", unique=True, always_update=False, populate_from="name")
 
     class Meta:
         ordering = ('name', )
@@ -59,16 +60,14 @@ class Product(models.Model):
 
 
     def get_absolute_url(self):
-        print(f'/{self.category.slug}/{self.slug}/')
         return f'/{self.category.slug}/{self.slug}/'
-
 
     def get_image(self):
         if self.image:
             return 'http://127.0.0.1:8000' + self.image.url
         else:
             return ''
-
+    
     def get_thumbnail(self):
         if self.thumbnail:
             return 'http://127.0.0.1:8000' + self.thumbnail.url
@@ -94,19 +93,3 @@ class Product(models.Model):
         thumbnail =File(thumb_io, name=image.name)
 
         return thumbnail
-
-
-class WeAreTheWorld(models.Model):
-    # id = models.BigAutoField(primary_key=True)
-    # user = models.ForeignKey(User, related_name='WeAreTheWorlds', default=1, on_delete=models.CASCADE)
-    # product = models.ForeignKey(Product, related_name='RatedProduct', default=1, on_delete=models.CASCADE)
-
-    text = models.TextField(max_length = 2000, blank=True, default="")
-    rate = models.FloatField(blank=True,  default=0)
-    # user = models.CharField(blank=False, max_length=60, default=2)
-    # user_id = models.ForeignKey(Product, related_name='Rev1', on_delete=models.CASCADE, default=2)
-
-    def __str__(self):
-        return self.user.text
-
-
