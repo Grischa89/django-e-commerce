@@ -29,8 +29,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-STRIPE_SECRET_KEY = 'sk_test_51IaHYiHsFtjiaIoWoCRRgq2yPtfovQcZWCIqZPETzgVAbVvXK4G0fn5iSdX8ovIK6F3T1cOjmwhtscnovhAqtPoS00PdkheTkz'
-
+with open(str(BASE_DIR.parent)  + '\stripe_key.txt') as file:
+    STRIPE_SECRET_KEY = file.read().strip()
 
 # Application definition
 
